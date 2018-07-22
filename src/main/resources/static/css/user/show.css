@@ -1,0 +1,40 @@
+div.profile img {
+    vertical-align: middle;
+    height: 240px;
+    width:240px;
+}
+
+.profile h2 {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.profile pre {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.profile a {
+    color: #cccccc;
+    font-size: .9em;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+p.sub-data {
+    font-size: 12px;
+}
+
+th.data p {
+    font-size: 14px;
+}
+
+tr td img {
+    height: 48px;
+    width: 48px;
+}
+
+.contents .article-section a {
+    color: black !important;
+}
+

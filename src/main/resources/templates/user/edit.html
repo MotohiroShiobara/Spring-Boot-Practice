@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>ユーザー編集画面</title>
+
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/login.css}">
+</head>
+<body>
+<div layout:decorator="layout">
+    <div layout:fragment="contents">
+        <div class="container">
+            <form method="post" th:action="@{/user}" th:object="${userEditForm}" enctype="multipart/form-data">
+
+                <input id="lefile" type="file" style="display:none" th:field="*{iconImageUrl}">
+                <div class="form-group">
+                    <label for="photo_cover">プロフィール画像</label>
+                    <br/>
+                    <img th:src="${currentUser.iconImageUrl}" style="height: 100px; width: 100px;">
+                    <div class="file-input-group">
+                        <p th:if="${#fields.hasErrors('iconImageUrl')}" th:errors="*{iconImageUrl}"
+                           class="col-sm-offset-2 text-danger"></p>
+                        <input type="text" id="photo_cover" class="form-control" placeholder="画像を選択してください">
+                        <button type="button" class="btn btn-info" onclick="$('input[id=lefile]').click();">
+                            <span class="far fa-file" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <script>
+                    $('input[id=lefile]').change(function () {
+                        $('#photo_cover').val($(this).val());
+                    });
+                </script>
+
+                <div class="form-group">
+                    <label for="accountNameForm">ユーザー名</label>
+                    <input type="text" class="form-control" id="accountNameForm" th:field="*{accountName}" th:value="*{accountName}">
+                    <p th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}" class="col-sm-offset-2 text-danger"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="profileForm">自己紹介</label>
+                    <textarea class="form-control" id="profileForm" th:field="*{profile}" maxlength="1000" th:value="*{profile}"></textarea>
+                    <p th:if="${#fields.hasErrors('profile')}" th:errors="*{profile}"
+                       class="col-sm-offset-2 text-danger"></p>
+                </div>
+
+                <div class="button row">
+                    <div class="col-md-1">
+                        <button type="submit" class="btn-success btn">更新</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

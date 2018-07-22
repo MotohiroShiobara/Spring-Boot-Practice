@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Userpage</title>
+
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/user/show.css}">
+</head>
+<body>
+<div layout:decorator="layout">
+    <div layout:fragment="contents">
+        <div class="container main">
+            <div class="row">
+                <div class="col-md-3 profile">
+                    <img th:src="${user.iconImageUrl}"
+                         height="200"
+                         width="200">
+                    <h2 th:text="${user.accountName}"></h2>
+                    <pre th:text="${user.profile}"></pre>
+                    <a th:if="${user.id == currentUserId}" th:href="@{'/user/' + ${currentUserId} + '/edit'}">プロフィールを編集する</a>
+                </div>
+
+                <div class="col-md-9 article-section">
+                    <table class="table table-condensed">
+                        <thead>
+                        <tr class="row">
+                            <th class="data text-center col-md-6">
+                                <h3 th:text="${articleList.size()}"></h3>
+                                <p>items</p>
+                            </th>
+                            <th class="data text-center col-md-6">
+                                <h3 th:text="${contribution}"></h3>
+                                <p>contribution</p>
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a href="#article" class="nav-link active" data-toggle="tab">最近の投稿</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#lesson" class="nav-link" data-toggle="tab">開催中の講座</a>
+                        </li>
+
+                        <li class="nav-item" th:if="${currentUser.id == user.id}">
+                            <a href="#closed_lesson" class="nav-link" data-toggle="tab">応募終了した講座</a>
+                        </li>
+
+                        <li class="nav-item" th:if="${currentUser.id == user.id}">
+                            <a href="#apply_lesson" class="nav-link" data-toggle="tab">応募済みの講座</a>
+                        </li>
+                    </ul>
+
+                    <table class="table table-condensed tab-content">
+                        <tbody id="article" class="tab-pane active">
+                        <tr class="row" th:each="result : ${articleList}">
+                            <td class="col-md-1"><img
+                                    th:src="${result.iconImageUrl}"
+                                    height="50"
+                                    width="100"></td>
+                            <td class="col-md-11">
+                                <p th:text="|${#dates.format(result.releasedAt, 'yyyy年MM月dd日')}に投稿|"
+                                   class="sub-data"></p>
+                                <a th:href="@{'/article/' + ${result.id}}"><h4 th:text="${result.title}"></h4></a>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                        <!--開催中のlessonのリスト-->
+                        <tbody id="lesson" class="tab-pane">
+
+                        <tr class="row" th:each="result : ${openLessonList}">
+
+                            <td class="col-md-1">
+                                <a th:href="@{'/lesson/' + ${result.id}}">
+                                    <img th:src="${result.imageUrl}"
+                                         height="50"
+                                         width="100">
+                                </a>
+                            </td>
+
+                            <td class="col-md-11">
+                                <a th:href="@{'/lesson/' + ${result.id}}">
+                                    <p th:text="|開催日: ${#dates.format(result.eventDatetime, 'yyyy年MM月dd日 HH:MM')} 料金: ¥${result.price}|"
+                                       class="sub-data"></p>
+                                    <h4 th:text="${result.title}"></h4>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                        <!--応募が終了したlessonのリスト-->
+                        <tbody id="closed_lesson" class="tab-pane">
+
+                        <tr class="row" th:each="result : ${closedLessonList}">
+
+                            <td class="col-md-1">
+                                <a th:href="@{'/lesson/' + ${result.id}}">
+                                    <img th:src="${result.imageUrl}"
+                                         height="50"
+                                         width="100">
+                                </a>
+                            </td>
+
+                            <td class="col-md-11">
+                                <a th:href="@{'/lesson/' + ${result.id}}">
+                                    <p th:text="|開催日: ${#dates.format(result.eventDatetime, 'yyyy年MM月dd日 HH:MM')} 料金: ¥${result.price}|"
+                                       class="sub-data"></p>
+                                    <h4 th:text="${result.title}"></h4>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                        <!--応募したlessonのリスト-->
+                        <tbody id="apply_lesson" class="tab-pane" th:if="${currentUser.id == user.id}">
+                        <tr class="row" th:each="result : ${applyedLessonList}">
+                            <td class="col-md-1">
+                                <a th:href="@{'/lesson/' + ${result.id}}">
+                                    <img th:src="${result.imageUrl}"
+                                         height="50"
+                                         width="100">
+                                </a>
+                            </td>
+
+                            <td class="col-md-11">
+                                <a th:href="@{'/lesson/' + ${result.id}}">
+                                    <p th:text="|開催日: ${#dates.format(result.eventDatetime, 'yyyy年MM月dd日 HH:MM')} 料金: ¥${result.price}|"
+                                       class="sub-data"></p>
+                                    <h4 th:text="${result.title}"></h4>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <nav aria-label="">
+                        <ul class="pagination">
+                            <li th:class="'page-item ' + ${n == pageCount ? 'active' : ''}" th:each="n : ${pageList}">
+                                <a th:class="page-link" th:href="'?page=' + ${n}" th:text="${n}"></a>
+                            </li>
+                            <!--<li class="page-item"><a class="page-link" href="?page=1">1</a></li>-->
+                            <!--<li class="page-item active">-->
+                            <!--<a class="page-link" href="?page=2">2 <span class="sr-only">(current)</span></a>-->
+                            <!--</li>-->
+                            <!--<li class="page-item"><a class="page-link" href="?page=3">3</a></li>-->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

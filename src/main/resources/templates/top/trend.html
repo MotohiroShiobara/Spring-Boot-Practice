@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>TOPページ</title>
+
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/top/trend.css}">
+</head>
+<body>
+
+<div layout:decorator="layout">
+    <div layout:fragment="contents">
+        <div class="container body">
+            <div class="main">
+                <div class="item-list">
+                    <div class="item-main" th:each="result : ${articleList}">
+                        <div class="item-tr">
+                            <a th:href="@{'/user/' + ${result.userId}}" class="icon">
+                                <img th:src="${result.iconImageUrl}">
+                            </a>
+
+                            <div class="item-body">
+                                <a class="item-title" th:href="@{'/article/' + ${result.id}}"
+                                   th:text="${result.title}"></a>
+
+                                <div class="item-meta">
+                                    <span>by <a th:href="@{'/user/' + ${result.userId}}" th:text="${result.userName}|"></a></span>
+                                    <div class="item-like">
+                                        <span class="fa fa-thumbs-up" th:text="|${result.likeCount}|"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
